@@ -1,7 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    line-height: 1;
+    color: black;
+    background: white;
+}
+
+.main {
+    display: flex;
+}
+
+.detailed-info {
+    width: 60%;
+}
+
 .countries-list {
-    width: 50%;
-    margin: 0 20px 20px 0;
-    box-shadow: 0 1px 13px 0 lightgray;
+    width: 40%;
+    min-width: 500px;
+    margin: 0 20px 10px 0;
+    box-shadow: 0 -3em 3em rgba(0,0,0,0.1);
 }
 
 .country-item {
@@ -12,30 +30,35 @@
 }
 
 .country-item:hover {
-    background-color: lightgray;
-}
-
-a:link, a:visited, a:active{
-    color: black;
-    text-decoration: none;
-}
-
-a:link:hover, a:visited:hover, a:active:hover {
     cursor: pointer;
 }
 
+.country-selected {
+    background-color: red;
+    font-size: 17px;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+}
+
+.country-item:hover {
+    background-color: lightgray;
+}
+
 .country-details {
-    position: fixed;
-    width: 350px;
-    height: 500px;
+    position: sticky;
+    width: 600px;
     top: 30%;
-    right: 15%;
+    margin-left: auto;
+    margin-right: auto;
     box-shadow: 0 1px 13px 0 lightgray;
 }
 .empty-state {
-    position: fixed;
+    position: sticky;
+    text-align: center;
+    width: 100%;
+    min-width: 500px;
     top: 50%;
-    right: 15%;
     font-size: 30px;
     color: gray;
 }
@@ -48,7 +71,7 @@ a:link:hover, a:visited:hover, a:active:hover {
 }
 
 .country-details > span:first-child {
-    margin-top: 30px;
+    padding-top: 45px;
 }
 
 #close-btn {
@@ -75,7 +98,13 @@ img {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 75%;
+    width: 65%;
+}
+
+#flag {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 25px;
 }
 
 #detailed-info {
