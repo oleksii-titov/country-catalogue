@@ -26,7 +26,6 @@ export class Catalogue extends React.Component {
         phoneCode: '',
         currency: '',
         flag: '',
-        isSelected: false,
     };
 
     componentDidMount() {
@@ -39,16 +38,15 @@ export class Catalogue extends React.Component {
 
     getFullCountryInfo = (e: { currentTarget: { id: any } }) => {
         const currentlySelectedCountry = e.currentTarget.id,
-            countryFullDetails: Country = this.state.countries.find((country: Country) => {
+            moreDetails: Country = this.state.countries.find((country: Country) => {
                 return country.name === currentlySelectedCountry;
             }) as unknown as Country,
-            moreDetails = countryFullDetails,
-            currency = moreDetails.currencies.map(({ code }) => code).join(' ,'),
+            currency = moreDetails.currencies.map(({code}) => code).join(' ,'),
             alpha2code = moreDetails.alpha2Code,
             alpha3code = moreDetails.alpha3Code,
             phoneCode = moreDetails.callingCodes,
             flag = moreDetails.flag;
-        
+
         this.setState({
             hideDetails: false,
             hideEmptyState: true,
@@ -58,7 +56,6 @@ export class Catalogue extends React.Component {
             threeDigitsCountryCode: alpha3code,
             phoneCode: phoneCode,
             flag: flag,
-            isSelected:true,
         });
     }
 
@@ -74,12 +71,12 @@ export class Catalogue extends React.Component {
                 <div key={country.name}>
                     <div
                         onClick={this.getFullCountryInfo}
-                        className={"country-item"}
+                        className={(this.state.selectedCountry === country.name) ? "country-selected" : "country-item"}
                         id={country.name}>
                         {country.name}
                     </div>
                 </div>
-            )
+            );
         })
     };
 

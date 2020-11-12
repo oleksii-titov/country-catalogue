@@ -34,7 +34,8 @@ body {
 }
 
 .country-selected {
-    background-color: red;
+    background-color: dimgray;
+    color: white;
     font-size: 17px;
     height: 50px;
     line-height: 50px;
@@ -55,12 +56,11 @@ body {
 }
 .empty-state {
     position: sticky;
-    text-align: center;
-    width: 100%;
-    min-width: 500px;
     top: 50%;
+    min-width: 600px;
     font-size: 30px;
     color: gray;
+    text-align: center;
 }
 
 .country-details > span {
