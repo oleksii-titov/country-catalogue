@@ -18,8 +18,8 @@ body {
 .countries-list {
     width: 40%;
     min-width: 500px;
-    margin: 0 20px 10px 0;
-    box-shadow: 0 -3em 3em rgba(0,0,0,0.1);
+    margin: 0 20px 0 0;
+    box-shadow: 0 -3em 3em rgba(0, 0, 0, 0.1);
 }
 
 .country-item {
@@ -29,17 +29,18 @@ body {
     padding-left: 10px;
 }
 
-.country-item:hover {
-    cursor: pointer;
-}
-
-.country-selected {
+.country-item.selected {
     background-color: dimgray;
     color: white;
-    font-size: 17px;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 10px;
+}
+
+.country-item.selected:hover {
+    background-color: dimgray;
+    color: white;
+}
+
+.country-item:hover {
+    cursor: pointer;
 }
 
 .country-item:hover {
@@ -49,6 +50,7 @@ body {
 .country-details {
     position: sticky;
     width: 600px;
+    height: 380px;
     top: 30%;
     margin-left: auto;
     margin-right: auto;
@@ -102,9 +104,11 @@ img {
 }
 
 #flag {
-    width: 100%;
-    height: 100%;
-    padding-bottom: 25px;
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 93px;
+    right: 0;
 }
 
 #detailed-info {

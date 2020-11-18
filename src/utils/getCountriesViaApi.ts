@@ -1,7 +1,9 @@
+import {Country} from '../components/Catalogue/Catalogue'
+
 export const getCountriesViaApi = () => new Promise((resolve, reject) => {
     const url = "https://restcountries.eu/rest/v2/all";
     const request = new XMLHttpRequest();
-    let result;
+    let result: Country[];
 
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
