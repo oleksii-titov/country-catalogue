@@ -1,3 +1,3 @@
 # Description
 
-Application must render the list of all countries. By clicking on the country, additional information about the country must be shown.
+Application must render the list of all countries. Pick a country from the list in order to see a detailed information about the country.
