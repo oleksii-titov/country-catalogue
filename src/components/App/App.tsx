@@ -6,7 +6,7 @@ import './css/App.css';
 function App() {
     return (
         <div className="App">
-            <Catalogue alpha2code={'ZA'}/>
+            <Catalogue/>
         </div>
     );
 }
