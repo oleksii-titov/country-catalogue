@@ -1,14 +1,10 @@
 import React from 'react';
 import {getCountriesViaApi} from '../../utils/getCountriesViaApi';
-import '../Catalogue/css/Catalogue.css';
+import './css/Catalogue.css';
 import cn from 'classnames';
 
 interface Currency {
     code: string;
-}
-
-interface CallingCodes {
-    callingCodes: string;
 }
 
 export interface Country {
@@ -17,23 +13,22 @@ export interface Country {
     alpha2Code: string;
     alpha3Code: string;
     flag: string;
-    callingCodes: CallingCodes[];
+    callingCodes: string[];
 }
 
-// TODO to describe an interface for a state
-/*interface CatalogueState {
-    countries: Country[],
-    selectedCountry: string,
-    hideDetails: boolean,
-    name: string,
-    twoDigitsCountryCode: string,
-    threeDigitsCountryCode: string,
-    phoneCode: CallingCodes[],
-    currency: Currency[],
-    flag: string,
-}*/
+interface CatalogueState {
+    countries: Country[];
+    selectedCountry: string;
+    hideDetails: boolean;
+    name: string;
+    twoDigitsCountryCode: string;
+    threeDigitsCountryCode: string;
+    phoneCode: string;
+    currency: string;
+    flag: string;
+}
 
-export class Catalogue extends React.Component {
+export class Catalogue extends React.Component<{}, CatalogueState> {
     state = {
         countries: [],
         selectedCountry: '',
@@ -55,19 +50,15 @@ export class Catalogue extends React.Component {
 
             this.setState({
                 countries: result,
-                hideDetails: false,
                 ...this.getCountryProps(countryCodeFromUrl),
             });
         });
 
-        //TODO: implement using react-router
-        /*window.onpopstate = (e:any) => {
-            e.preventDefault();
-                this.setState({
-                    hideDetails: false,
-                    ...this.getCountryProps(window.history.state),
-                });
-        };*/
+        window.onpopstate = () => {
+            this.setState({
+                ...this.getCountryProps(window.history.state),
+            });
+        };
     }
 
     getCountryProps(alpha2code: string): any {
@@ -78,6 +69,7 @@ export class Catalogue extends React.Component {
             };
         }
         return {
+            hideDetails: false,
             selectedCountry: alpha2code,
             name: country.name,
             twoDigitsCountryCode: alpha2code,
@@ -90,10 +82,9 @@ export class Catalogue extends React.Component {
 
     getFullCountryInfo = (e: { currentTarget: { id: any } }) => {
         const alpha2code = e.currentTarget.id;
-        window.history.replaceState(alpha2code, "", alpha2code);
+        window.history.pushState(alpha2code, "", alpha2code);
 
         this.setState({
-            hideDetails: false,
             ...this.getCountryProps(alpha2code),
         });
     };
