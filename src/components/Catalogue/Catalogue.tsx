@@ -60,7 +60,6 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
             this.setState({
                 ...this.getCountryProps(window.history.state),
             });
-
         };
     }
 
