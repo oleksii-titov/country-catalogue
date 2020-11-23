@@ -1,21 +1,22 @@
-import {Country} from '../components/Catalogue/Catalogue'
+import { Country } from '../components/Catalogue/Catalogue'
 
 export const getCountriesViaApi = () => new Promise((resolve, reject) => {
-    const url = "https://restcountries.eu/rest/v2/all";
-    const request = new XMLHttpRequest();
-    let result: Country[];
+  const url = "https://restcountries.eu/rest/v2/all";
+  const request = new XMLHttpRequest();
+  let result: Country[];
 
-    request.onreadystatechange = () => {
-        if (request.readyState === 4) {
-            result = JSON.parse(request.response);
-            resolve(result);
-        }
-    };
+  request.onreadystatechange = () => {
+    if (request.readyState === 4) {
+      result = JSON.parse(request.response);
+      resolve(result);
+    }
+  };
 
-    request.onerror = () => {
-        reject("Something went wrong");
-    };
+  request.onerror = () => {
+    reject("Something went wrong");
+  };
 
-    request.open('GET', url);
-    request.send();
+  request.open('GET', url);
+  request.send();
 });
+

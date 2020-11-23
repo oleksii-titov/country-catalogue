@@ -158,6 +158,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
                       <span>Currency:
                   <span id={"detailed-info"}>{this.state.currency}</span>
               </span>
+                      <span>Exchange rate:</span>
                       <div id={"flag"}><img src={this.state.flag} alt={"Official country flag"}/></div>
                       <span>Neighbor countries:</span>
                       <div id={"borders"}>{this.renderNeighbors()}</div>
