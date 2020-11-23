@@ -96,22 +96,20 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     renderNeighbors = () => {
         let neighborFlags = [];
         for (const countryCode of this.state.borders) {
-            neighborFlags.push(((this.countries.find(country => country.alpha3Code === countryCode))?.flag))
+            neighborFlags.push(((this.countries.find(country => country.alpha3Code === countryCode))?.flag));
         }
 
         if (this.state.borders.length === 0) {
             return (
                 <div id={"no-neighbors"}>NO NEIGHBORS</div>
-            )
+            );
         }
         return neighborFlags.map(flag => {
             return (
                 <img src={flag} alt={"neighbor-flag"} className={"neighbor-flag"}/>
-            )
-
-        })
+            );
+        });
     };
-
 
     handleClose = () => {
         this.setState({
