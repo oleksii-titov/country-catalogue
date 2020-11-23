@@ -14,6 +14,7 @@ export interface Country {
     alpha3Code: string;
     flag: string;
     callingCodes: string[];
+    borders: string[];
 }
 
 interface CatalogueState {
@@ -39,6 +40,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
         phoneCode: '',
         currency: '',
         flag: '',
+        borders: [],
     };
 
     private countries: Country[] = [];
@@ -58,6 +60,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
             this.setState({
                 ...this.getCountryProps(window.history.state),
             });
+
         };
     }
 
@@ -77,6 +80,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
             phoneCode: country.callingCodes.join(', '),
             currency: country.currencies.filter((element) => element.code !== "(none)").map(({code}) => code).join(', '),
             flag: country.flag,
+            borders: country.borders,
         };
     }
 
@@ -88,6 +92,26 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
             ...this.getCountryProps(alpha2code),
         });
     };
+
+    renderNeighbors = () => {
+        let neighborFlags = [];
+        for (const countryCode of this.state.borders) {
+            neighborFlags.push(((this.countries.find(country => country.alpha3Code === countryCode))?.flag))
+        }
+
+        if (this.state.borders.length === 0) {
+            return (
+                <div id={"no-neighbors"}>NO NEIGHBORS</div>
+            )
+        }
+        return neighborFlags.map(flag => {
+            return (
+                <img src={flag} alt={"neighbor-flag"} className={"neighbor-flag"}/>
+            )
+
+        })
+    };
+
 
     handleClose = () => {
         this.setState({
@@ -140,6 +164,8 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
                         <div id={"flag"}>
                             <img src={this.state.flag} alt={"Official country flag"}/>
                         </div>
+                        <span>Neighbor countries:</span>
+                        <div id={"borders"}>{this.renderNeighbors()}</div>
                         <span onClick={this.handleClose} id={"close-btn"}>X</span>
                     </div>
                 </div>
