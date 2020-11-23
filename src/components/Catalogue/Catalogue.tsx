@@ -1,5 +1,5 @@
 import React from 'react';
-import {getCountriesViaApi} from '../../utils/getCountriesViaApi';
+import { getCountriesViaApi } from '../../utils/getCountriesViaApi';
 import './css/Catalogue.css';
 import cn from 'classnames';
 
@@ -100,12 +100,12 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
 
         if (this.state.borders.length === 0) {
             return (
-                <div id={"no-neighbors"}>NO NEIGHBORS</div>
+              <div id={"no-neighbors"}>NO NEIGHBORS</div>
             );
         }
         return neighborFlags.map(flag => {
             return (
-                <img src={flag} alt={"neighbor-flag"} className={"neighbor-flag"}/>
+              <img src={flag} alt={"neighbor-flag"} className={"neighbor-flag"}/>
             );
         });
     };
@@ -119,54 +119,52 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     renderCountries = () => {
         return this.state.countries.map((country: Country) => {
             return (
-                <div key={country.name}>
-                    <div
-                        onClick={this.getFullCountryInfo}
-                        className={cn({
-                            'country-item': true,
-                            'selected': this.state.selectedCountry === country.alpha2Code,
-                        })}
-                        id={country.alpha2Code}>
-                        {country.name}
-                    </div>
-                </div>
+              <div key={country.name}>
+                  <div
+                    onClick={this.getFullCountryInfo}
+                    className={cn({
+                        'country-item': true,
+                        'selected': this.state.selectedCountry === country.alpha2Code,
+                    })}
+                    id={country.alpha2Code}>
+                      {country.name}
+                  </div>
+              </div>
             );
         });
     };
 
     render() {
         return (
-            <div className={"main"}>
-                <div className={'countries-list'}>{this.renderCountries()}</div>
-                <div className={"detailed-info"}>
-                    <div className={"empty-state"} hidden={!this.state.hideDetails}>
-                        <span>Select a country to see more details</span>
-                    </div>
-                    <div className={"country-details"} hidden={this.state.hideDetails}>
-                        <span>Name:
-                            <span id={"detailed-info"}>{this.state.name}</span>
-                        </span>
-                        <span>Alpha-2 country code:
-                            <span id={"detailed-info"}>{this.state.twoDigitsCountryCode}</span>
-                        </span>
-                        <span>Alpha-3 country code:
-                            <span id={"detailed-info"}>{this.state.threeDigitsCountryCode}</span>
-                        </span>
-                        <span>Phone code:
-                            <span id={"detailed-info"}>{this.state.phoneCode}</span>
-                        </span>
-                        <span>Currency:
-                            <span id={"detailed-info"}>{this.state.currency}</span>
-                        </span>
-                        <div id={"flag"}>
-                            <img src={this.state.flag} alt={"Official country flag"}/>
-                        </div>
-                        <span>Neighbor countries:</span>
-                        <div id={"borders"}>{this.renderNeighbors()}</div>
-                        <span onClick={this.handleClose} id={"close-btn"}>X</span>
-                    </div>
-                </div>
-            </div>
+          <div className={"main"}>
+              <div className={'countries-list'}>{this.renderCountries()}</div>
+              <div className={"detailed-info"}>
+                  <div className={"empty-state"} hidden={!this.state.hideDetails}>
+                      <span>Select a country to see more details</span>
+                  </div>
+                  <div className={"country-details"} hidden={this.state.hideDetails}>
+              <span>Name:
+                  <span id={"detailed-info"}>{this.state.name}</span>
+              </span>
+                      <span>Alpha-2 country code:
+                  <span id={"detailed-info"}>{this.state.twoDigitsCountryCode}</span>
+              </span>
+                      <span>Alpha-3 country code:
+                  <span id={"detailed-info"}>{this.state.threeDigitsCountryCode}</span>
+              </span>
+                      <span>Phone code:
+                  <span id={"detailed-info"}>{this.state.phoneCode}</span>
+              </span>
+                      <span>Currency:
+                  <span id={"detailed-info"}>{this.state.currency}</span>
+              </span>
+                      <div id={"flag"}><img src={this.state.flag} alt={"Official country flag"}/></div>
+                      <span>Neighbor countries:</span>
+                      <div id={"borders"}>{this.renderNeighbors()}</div>
+                      <span onClick={this.handleClose} id={"close-btn"}>X</span>
+                  </div>
+              </div>
+          </div>
         );
     };
 }
