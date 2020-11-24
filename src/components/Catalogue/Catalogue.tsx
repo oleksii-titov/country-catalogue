@@ -78,7 +78,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     let isRateAvailable = false;
 
     if (country!.currencies.length > 1) {
-      for (let i = 0; i < country!.currencies.length; i++) {
+      for (let i = 1; i < country!.currencies.length; i++) {
         for (const code in this.exchangeRates) {
           if (country!.currencies[i].code === code) {
             primaryCurrency = country!.currencies[i].code;
