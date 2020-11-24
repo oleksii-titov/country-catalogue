@@ -73,9 +73,20 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
 
   getCountryProps(alpha2code: string): any {
     const country = this.countries.find(country => country.alpha2Code === alpha2code);
-    // @ts-ignore
-    const primaryCurrency = country.currencies[0].code;
+
+    let primaryCurrency = country!.currencies[0].code;
     let isRateAvailable = false;
+
+    if (country!.currencies.length > 1) {
+      for (let i = 0; i < country!.currencies.length; i++) {
+        for (const code in this.exchangeRates) {
+          if (country!.currencies[i].code === code) {
+            primaryCurrency = country!.currencies[i].code;
+            isRateAvailable = true;
+          }
+        }
+      }
+    }
 
     for (let key in this.exchangeRates) {
       if (key === primaryCurrency) {
