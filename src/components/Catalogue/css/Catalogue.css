@@ -19,7 +19,7 @@ body {
 .countries-list {
     width: 40%;
     min-width: 500px;
-    min-height: 1000px;
+    min-height: 2000px;
     margin: 0 20px 0 0;
     box-shadow: 0 -3em 3em rgba(0, 0, 0, 0.1);
 }
