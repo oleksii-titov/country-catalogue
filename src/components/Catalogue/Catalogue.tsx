@@ -1,6 +1,6 @@
 import React from 'react';
 import { getCountriesViaApi } from '../../utils/getCountriesViaApi';
-import { getExchangeRate } from "../../utils/getExchangeRate";
+import { getExchangeRates } from "../../utils/getExchangeRate";
 import './css/Catalogue.css';
 import cn from 'classnames';
 
@@ -8,7 +8,7 @@ interface Currency {
   code: string;
 }
 
-interface ExchangeRates {
+interface ExchangeRate {
   [currencyCode: string]: number;
 }
 
@@ -20,7 +20,6 @@ export interface Country {
   flag: string;
   callingCodes: string[];
   borders: string[];
-  exchangeRates: ExchangeRates;
 }
 
 interface CatalogueState {
@@ -51,54 +50,55 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
   };
 
   private countries: Country[] = [];
-  private exchangeRates: ExchangeRates = {};
+  private exchangeRates: ExchangeRate = {};
 
-  componentDidMount() {
-    getCountriesViaApi().then((result) => {
-      this.countries = result as unknown as Country[];
-      const countryCodeFromUrl = window.location.pathname.replace('/', '');
+  async componentDidMount() {
+    const result = await getCountriesViaApi();
+    this.countries = result as unknown as Country[];
+    const countryCodeFromUrl = window.location.pathname.replace('/', '');
 
-      this.setState({
-        countries: result,
-        ...this.getCountryProps(countryCodeFromUrl),
-      });
+    this.exchangeRates = await getExchangeRates();
+    this.setState({
+      countries: result,
+      ...this.getCountryProps(countryCodeFromUrl),
     });
 
     window.onpopstate = () => {
       this.setState({
-        ...this.getCountryProps(window.history.state),
+        ...this.getCountryProps(countryCodeFromUrl),
       });
     };
   }
 
-  getCountryProps(alpha2code: string): any {
-    const country = this.countries.find(country => country.alpha2Code === alpha2code);
+  getExchangeRateAndCurrency(currencies: Currency[]) {
+    const rates = this.exchangeRates;
+    let primaryCurrency = "",
+      isRateAvailable = false;
 
-    let primaryCurrency = country!.currencies[0].code;
-    let isRateAvailable = false;
-
-    if (country!.currencies.length > 1) {
-      for (let i = 1; i < country!.currencies.length; i++) {
-        for (const code in this.exchangeRates) {
-          if (country!.currencies[i].code === code) {
-            primaryCurrency = country!.currencies[i].code;
-            isRateAvailable = true;
-          }
-        }
-      }
-    }
-
-    for (let key in this.exchangeRates) {
-      if (key === primaryCurrency) {
+    for (let i = 0; i < currencies.length; i++) {
+      if (rates.hasOwnProperty(currencies[i].code)) {
+        primaryCurrency = currencies[i].code;
         isRateAvailable = true;
+        break;
       }
     }
+
+    return {
+      currency: primaryCurrency,
+      rate: rates[primaryCurrency],
+      isRateAvailable,
+    };
+  }
+
+  getCountryProps(alpha2code: string | undefined): any {
+    const country = this.countries.find(country => country.alpha2Code === alpha2code);
 
     if (!country) {
       return {
         hideDetails: true,
       };
     }
+    const {currency, rate, isRateAvailable} = this.getExchangeRateAndCurrency(country.currencies);
 
     return {
       hideDetails: false,
@@ -112,8 +112,8 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
         .map(({code}) => code).join(', '),
       flag: country.flag,
       borders: country.borders,
-      exchangeRates: (isRateAvailable)
-        ? (`USD to ${country.currencies[0].code}: ${(this.exchangeRates[primaryCurrency]).toFixed(2)}`)
+      exchangeRates: isRateAvailable
+        ? (`USD to ${currency}: ${rate.toFixed(2)}`)
         : "N/A",
     };
   }
@@ -122,14 +122,19 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     const alpha2code = e.currentTarget.id;
     window.history.pushState(alpha2code, "", alpha2code);
 
-    getExchangeRate().then((result) => {
-      this.exchangeRates = result as ExchangeRates;
-    });
-
     this.setState({
+      hideDetails: false,
       ...this.getCountryProps(alpha2code),
     });
   };
+
+  goToNeighbor = (e: any) => {
+    const neighborAlpha2Code = this.countries.find(country => country.flag === e.target.src)?.alpha2Code;
+    window.history.pushState(neighborAlpha2Code, "", neighborAlpha2Code);
+    this.setState({
+      ...this.getCountryProps(neighborAlpha2Code),
+    });
+  }
 
   renderNeighbors = () => {
     let neighborFlags = [];
@@ -143,8 +148,16 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
       );
     }
     return neighborFlags.map(flag => {
+      const countryName = this.countries.find(country => country.flag === flag)?.name;
       return (
-        <img src={flag} alt={"neighbor-flag"} className={"neighbor-flag"} key={flag}/>
+        <img
+          title={countryName}
+          src={flag}
+          alt={"neighbor-flag"}
+          className={"neighbor-flag"}
+          key={flag}
+          onClick={this.goToNeighbor}
+        />
       );
     });
   };
@@ -166,6 +179,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
               'selected': this.state.selectedCountry === country.alpha2Code,
             })}
             id={country.alpha2Code}>
+            <img alt={country.flag} src={country.flag} className={"icon-flag"}/>
             {country.name}
           </div>
         </div>
@@ -173,10 +187,25 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     });
   };
 
+  searchCountry = (e: any) => {
+    const searchResult = this.countries.filter(country => country.name.startsWith((e.target.value.charAt(0).toUpperCase()) + e.target.value.slice(1)));
+    this.setState({
+      countries: searchResult,
+    })
+  }
+
   render() {
     return (
       <div className={"main"}>
-        <div className={'countries-list'}>{this.renderCountries()}</div>
+        <div className={'countries-list'}>
+          <input
+            type={"text"}
+            className={"search"}
+            placeholder={"Start typing ..."}
+            onChange={this.searchCountry}
+          />
+          {this.renderCountries()}
+        </div>
         <div className={"detailed-info"}>
           <div className={"empty-state"} hidden={!this.state.hideDetails}>
             <span>Select a country to see more details</span>
