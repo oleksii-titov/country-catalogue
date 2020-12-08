@@ -123,18 +123,12 @@ img {
 
 .neighbor-flag {
     width: 50px;
-    margin: 0 0 20px 20px;
+    margin: 0 0 15px 20px;
     display: inline-block;
 }
 
 .neighbor-flag:hover {
     cursor: pointer;
-}
-
-#no-neighbors {
-    text-align: center;
-    color: dimgray;
-    font-size: 20px;
 }
 
 .search {
@@ -159,4 +153,8 @@ img {
     width: 30px;
     display: inline;
     padding-right: 10px;
+}
+
+#borders {
+    display: inline-block;
 }
