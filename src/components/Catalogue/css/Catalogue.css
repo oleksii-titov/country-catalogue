@@ -51,7 +51,9 @@ body {
 
 .country-details {
     position: sticky;
+    border-radius: 5px;
     padding-bottom: 25px;
+    margin-bottom: 20px;
     width: 600px;
     top: 30%;
     margin-left: auto;
@@ -71,6 +73,7 @@ body {
 
 .country-details > span {
     display: block;
+    font-weight: bold;
     line-height: 50px;
     font-size: 17px;
     margin-left: 20px;
@@ -97,7 +100,7 @@ body {
 #close-btn:hover {
     cursor: pointer;
     background-color: #d2d2d2;
-    border-radius: 100%;
+    border-radius: 4px;
 }
 
 img {
