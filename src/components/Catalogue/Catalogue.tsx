@@ -1,8 +1,9 @@
 import React from 'react';
 import { getCountriesViaApi } from '../../utils/getCountriesViaApi';
-import { ExchangeRates } from "../ExchangeRates/ExchangeRates";
+import { ExchangeRates } from '../ExchangeRates/ExchangeRates';
 import './css/Catalogue.css';
 import cn from 'classnames';
+import { DebounceInput } from 'react-debounce-input';
 
 interface Currency {
   code: string;
@@ -167,7 +168,8 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     return (
       <div className={"main"}>
         <div className={'countries-list'}>
-          <input
+          <DebounceInput
+            debounceTimeout={300}
             type={"text"}
             className={"search"}
             placeholder={"Start typing ..."}
