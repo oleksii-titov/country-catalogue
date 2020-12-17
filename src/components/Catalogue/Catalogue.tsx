@@ -1,9 +1,9 @@
 import React from 'react';
+import { DebounceInput } from 'react-debounce-input';
 import { getCountriesViaApi } from '../../utils/getCountriesViaApi';
 import { ExchangeRates } from '../ExchangeRates/ExchangeRates';
 import './css/Catalogue.css';
 import cn from 'classnames';
-import { DebounceInput } from 'react-debounce-input';
 
 interface Currency {
   code: string;
@@ -22,6 +22,7 @@ export interface Country {
 interface CatalogueState {
   countries: Country[];
   selectedCountry: string;
+  isLoading: boolean;
   hideDetails: boolean;
   name: string;
   twoDigitsCountryCode: string;
@@ -36,6 +37,7 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
   state = {
     countries: [],
     selectedCountry: '',
+    isLoading: true,
     hideDetails: true,
     name: '',
     twoDigitsCountryCode: '',
@@ -75,11 +77,12 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
       };
     }
 
-    let countryListOfCurrencies = country.currencies.map(x => x.code).filter(x => x !== "(none)" && x !== null);
+    const countryListOfCurrencies = country.currencies.map(x => x.code).filter(x => x !== "(none)" && x !== null);
 
     return {
       hideDetails: false,
       selectedCountry: alpha2code,
+      isLoading: false,
       name: country.name,
       twoDigitsCountryCode: alpha2code,
       threeDigitsCountryCode: country.alpha3Code,
@@ -175,6 +178,11 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
             placeholder={"Start typing ..."}
             onChange={this.searchCountry}
           />
+          {
+            (!this.state.isLoading && this.state.countries.length < 1)
+              ? <p id={"no-search-results"}>No match found</p>
+              : null
+          }
           {this.renderCountries()}
         </div>
         <div className={"detailed-info"}>

@@ -135,7 +135,7 @@ img {
 }
 
 .search {
-    width: 682px;
+    width: 97%;
     height: 50px;
     font-size: 17px;
     line-height: 50px;
@@ -145,6 +145,11 @@ img {
 
 .search:focus {
     outline: none;
+}
+
+#no-search-results {
+    text-align: center;
+    color: gray;
 }
 
 ::placeholder {
