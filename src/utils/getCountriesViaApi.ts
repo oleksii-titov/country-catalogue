@@ -1,4 +1,4 @@
-import { Country } from '../components/Catalogue/Catalogue'
+import { Country } from '../../types';
 
 export const getCountriesViaApi = () => new Promise((resolve, reject) => {
   const url = "https://restcountries.eu/rest/v2/all";

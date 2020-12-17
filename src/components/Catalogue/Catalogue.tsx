@@ -1,55 +1,40 @@
 import React from 'react';
 import { DebounceInput } from 'react-debounce-input';
+import cn from 'classnames';
+import './css/Catalogue.css';
 import { getCountriesViaApi } from '../../utils/getCountriesViaApi';
 import { ExchangeRates } from '../ExchangeRates/ExchangeRates';
-import './css/Catalogue.css';
-import cn from 'classnames';
-
-interface Currency {
-  code: string;
-}
-
-export interface Country {
-  name: string;
-  currencies: Currency[];
-  alpha2Code: string;
-  alpha3Code: string;
-  flag: string;
-  callingCodes: string[];
-  borders: string[];
-}
+import { Country, EventWithId } from '../../../types';
+import { getCurrenciesCodesList } from '../../utils/getCurrenciesCodesList';
 
 interface CatalogueState {
-  countries: Country[];
-  selectedCountry: string;
+  countriesCodesList: string[];
+  selectedCountryCode: string;
   isLoading: boolean;
-  hideDetails: boolean;
-  name: string;
-  twoDigitsCountryCode: string;
-  threeDigitsCountryCode: string;
-  phoneCode: string;
-  currency: string;
-  flag: string;
-  listOfCurrencies: string[];
 }
 
 export class Catalogue extends React.Component<{}, CatalogueState> {
   state = {
-    countries: [],
-    selectedCountry: '',
+    countriesCodesList: [],
+    selectedCountryCode: '',
     isLoading: true,
-    hideDetails: true,
-    name: '',
-    twoDigitsCountryCode: '',
-    threeDigitsCountryCode: '',
-    phoneCode: '',
-    currency: '',
-    flag: '',
-    borders: [],
-    listOfCurrencies: [],
   };
 
   private countries: Country[] = [];
+
+  updateUrlParam(path: string) {
+    window.history.pushState(path, '', path);
+  }
+
+  getCountryByAlpha2Code(countryCode: string): Country | undefined {
+    return this.countries
+      .find(country => country.alpha2Code === countryCode);
+  }
+
+  getCountryByAlpha3Code(countryCode: string): Country | undefined {
+    return this.countries
+      .find(country => country.alpha3Code === countryCode);
+  }
 
   async componentDidMount() {
     const result = await getCountriesViaApi();
@@ -57,170 +42,219 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     const countryCodeFromUrl = window.location.pathname.replace('/', '');
 
     this.setState({
-      countries: result,
-      ...this.getCountryProps(countryCodeFromUrl),
+      countriesCodesList: this.countries.map(country => country.alpha2Code),
+      selectedCountryCode: countryCodeFromUrl ? countryCodeFromUrl : '',
     });
 
     window.onpopstate = () => {
+      const alpha2Code = window.history.state;
       this.setState({
-        ...this.getCountryProps(countryCodeFromUrl),
+        selectedCountryCode: alpha2Code,
       });
     };
   }
 
-  getCountryProps(alpha2code: string | undefined): any {
-    const country = this.countries.find(country => country.alpha2Code === alpha2code);
-
-    if (!country) {
-      return {
-        hideDetails: true,
-      };
-    }
-
-    const countryListOfCurrencies = country.currencies.map(x => x.code).filter(x => x !== "(none)" && x !== null);
-
-    return {
-      hideDetails: false,
-      selectedCountry: alpha2code,
-      isLoading: false,
-      name: country.name,
-      twoDigitsCountryCode: alpha2code,
-      threeDigitsCountryCode: country.alpha3Code,
-      phoneCode: country.callingCodes.join(', '),
-      currency: country.currencies.filter((currency) => (
-        currency.code !== "(none)" && currency.code !== null))
-        .map(({code}) => code).join(', '),
-      flag: country.flag,
-      borders: country.borders,
-      listOfCurrencies: countryListOfCurrencies,
-    };
-  }
-
-  getFullCountryInfo = (e: { currentTarget: { id: any } }) => {
-    const alpha2code = e.currentTarget.id;
-    window.history.pushState(alpha2code, "", alpha2code);
-
+  handleCountryClick = ({currentTarget: {id: alpha2code}}: EventWithId) => {
+    this.updateUrlParam(alpha2code);
     this.setState({
-      hideDetails: false,
-      ...this.getCountryProps(alpha2code),
+      selectedCountryCode: alpha2code,
     });
   };
 
-  goToNeighbor = (e: any) => {
-    const neighborAlpha2Code = this.countries.find(country => country.flag === e.target.src)?.alpha2Code;
-    window.history.pushState(neighborAlpha2Code, "", neighborAlpha2Code);
-    this.setState({
-      ...this.getCountryProps(neighborAlpha2Code),
-    });
-  }
+  renderNeighbors = (borders: string[]) => {
+    return borders.map((alpha3Code: string) => {
+      const currentCountry = this.getCountryByAlpha3Code(alpha3Code);
+      if (!currentCountry) {
+        return null;
+      }
 
-  renderNeighbors = () => {
-    let neighborFlags = [];
-    for (const countryCode of this.state.borders) {
-      neighborFlags.push(((this.countries.find(country => country.alpha3Code === countryCode))?.flag));
-    }
+      const {
+        name,
+        flag,
+        alpha2Code,
+      } = currentCountry;
 
-    return neighborFlags.map(flag => {
-      const countryName = this.countries.find(country => country.flag === flag)?.name;
       return (
         <img
-          title={countryName}
+          id={alpha2Code}
+          title={name}
           src={flag}
-          alt={"neighbor-flag"}
-          className={"neighbor-flag"}
+          alt={'neighbor-flag'}
+          className={'neighbor-flag'}
           key={flag}
-          onClick={this.goToNeighbor}
+          onClick={this.handleCountryClick}
         />
       );
     });
   };
 
   handleClose = () => {
+    this.updateUrlParam('/');
     this.setState({
-      hideDetails: true,
+      selectedCountryCode: '',
     });
   };
 
   renderCountries = () => {
-    return this.state.countries.map((country: Country) => {
+    return this.state.countriesCodesList.map((countryCode: string) => {
+      const currentCountry = this.getCountryByAlpha2Code(countryCode);
+      if (!currentCountry) {
+        return null;
+      }
+
+      const {
+        name,
+        alpha2Code,
+        flag,
+      } = currentCountry;
+
       return (
-        <div key={country.name}>
+        <div key={name}>
           <div
-            onClick={this.getFullCountryInfo}
+            id={alpha2Code}
+            onClick={this.handleCountryClick}
             className={cn({
               'country-item': true,
-              'selected': this.state.selectedCountry === country.alpha2Code,
-            })}
-            id={country.alpha2Code}>
-            <img alt={country.flag} src={country.flag} className={"icon-flag"}/>
-            {country.name}
+              'selected': this.state.selectedCountryCode === alpha2Code,
+            })}>
+            <img alt={flag} src={flag} className={'icon-flag'}/>
+            {name}
           </div>
         </div>
       );
     });
   };
 
-  searchCountry = (e: any) => {
-    const searchResult = this.countries.filter(country => country.name.startsWith((e.target.value.charAt(0).toUpperCase()) + e.target.value.slice(1)));
+  handleSearchInputChange = (e: any) => {
     this.setState({
-      countries: searchResult,
-    })
+      countriesCodesList: this.countries
+        .filter(country => country.name.toLowerCase().startsWith(e.target.value.toLowerCase()))
+        .map(country => country.alpha2Code),
+      isLoading: false,
+    });
+  };
+
+  renderSearchInput() {
+    return (
+      <DebounceInput
+        debounceTimeout={300}
+        type={'text'}
+        className={'search'}
+        placeholder={'Start typing ...'}
+        onChange={this.handleSearchInputChange}
+      />
+    );
+  }
+
+  renderNoSearchResults() {
+    return (
+      <p id={'no-search-results'}>No match found</p>
+    );
+  }
+
+  renderNoCountrySelected() {
+    return (
+      <div className={'empty-state'}>
+        <span>Select a country to see more details</span>
+      </div>
+    );
+  }
+
+  renderSelectedCountryDetails() {
+    const selectedCountry = this.getCountryByAlpha2Code(this.state.selectedCountryCode);
+    if (!selectedCountry) {
+      return;
+    }
+
+    const {
+      name,
+      alpha2Code,
+      alpha3Code,
+      callingCodes,
+      currencies,
+      flag,
+      borders,
+    } = selectedCountry;
+
+    const currenciesCodesList = getCurrenciesCodesList(currencies);
+
+    return (
+      <div className={'country-details'}>
+        <img className={'img-details'} src={flag} alt={'Official country flag'}/>
+        <span>Name
+            <span id={'detailed-info'}>{name}</span>
+        </span>
+        <span>Alpha-2 country code
+            <span id={'detailed-info'}>{alpha2Code}</span>
+        </span>
+        <span>Alpha-3 country code
+            <span id={'detailed-info'}>{alpha3Code}</span>
+        </span>
+        <span>Phone code
+            <span id={'detailed-info'}>{callingCodes.join(', ')}</span>
+        </span>
+        <span>Currency
+            <span id={'detailed-info'}>{currenciesCodesList.join(', ')}</span>
+        </span>
+
+        {
+          borders.length > 0
+            ? <div>
+              <span id={'neighbor-countries'}>Neighbor countries</span>
+              <div id={'borders'}>{this.renderNeighbors(borders)}</div>
+            </div>
+            : null
+        }
+
+        {
+          currenciesCodesList.length
+            ? <ExchangeRates listOfCurrencies={currenciesCodesList}/>
+            : null
+        }
+        <span onClick={this.handleClose} id={'close-btn'}>X</span>
+      </div>
+    );
   }
 
   render() {
     return (
-      <div className={"main"}>
-        <div className={'countries-list'}>
-          <DebounceInput
-            debounceTimeout={300}
-            type={"text"}
-            className={"search"}
-            placeholder={"Start typing ..."}
-            onChange={this.searchCountry}
-          />
-          {
-            (!this.state.isLoading && this.state.countries.length < 1)
-              ? <p id={"no-search-results"}>No match found</p>
-              : null
-          }
-          {this.renderCountries()}
-        </div>
-        <div className={"detailed-info"}>
-          <div className={"empty-state"} hidden={!this.state.hideDetails}>
-            <span>Select a country to see more details</span>
-          </div>
-          <div className={"country-details"} hidden={this.state.hideDetails}>
-              <span>Name
-                  <span id={"detailed-info"}>{this.state.name}</span>
-              </span>
-            <span>Alpha-2 country code
-                  <span id={"detailed-info"}>{this.state.twoDigitsCountryCode}</span>
-              </span>
-            <span>Alpha-3 country code
-                  <span id={"detailed-info"}>{this.state.threeDigitsCountryCode}</span>
-              </span>
-            <span>Phone code
-                  <span id={"detailed-info"}>{this.state.phoneCode}</span>
-              </span>
-            <span>Currency
-                  <span id={"detailed-info"}>{this.state.currency}</span>
-              </span>
-            <div id={"flag"}>
-              <img src={this.state.flag} alt={"Official country flag"}/>
-            </div>
-            <span id={"neighbor-countries"}
-                  style={this.state.borders.length === 0 ? {display: "none"} : {display: "block"}}>Neighbor countries</span>
-            <div id={"borders"}
-                 style={this.state.borders.length === 0 ? {display: "none"} : {display: "block"}}>{this.renderNeighbors()}</div>
+      <div className={'main'}>
+        <div className={'flex-item-wrapper countries'}>
+          <div className={'countries-list'}>
             {
-              this.state.listOfCurrencies.length ?
-                <ExchangeRates listOfCurrencies={this.state.listOfCurrencies}/> : null
+              this.renderSearchInput()
             }
-            <span onClick={this.handleClose} id={"close-btn"}>X</span>
+
+            {
+              (!this.state.isLoading && this.state.countriesCodesList.length === 0)
+                ? this.renderNoSearchResults()
+                : null
+            }
+
+            {
+              this.renderCountries()
+            }
+
+          </div>
+        </div>
+        <div className={'flex-item-wrapper details'}>
+          <div className={'country-details-container'}>
+
+            {
+              !this.state.selectedCountryCode
+                ? this.renderNoCountrySelected()
+                : null
+            }
+
+            {
+              this.state.selectedCountryCode
+                ? this.renderSelectedCountryDetails()
+                : null
+            }
+
           </div>
         </div>
       </div>
     );
   };
 }
-
