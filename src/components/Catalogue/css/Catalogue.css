@@ -47,12 +47,12 @@ body {
 }
 
 .country-item.selected {
-    background-color: dimgray;
+    background-color: #607d8b;
     color: white;
 }
 
 .country-item.selected:hover {
-    background-color: dimgray;
+    background-color: #607d8b;
     color: white;
 }
 
@@ -61,7 +61,7 @@ body {
 }
 
 .country-item:hover {
-    background-color: lightgray;
+    background-color: #607d8b;
 }
 
 .country-details {
@@ -153,11 +153,14 @@ img.img-details {
 }
 
 .search {
-    width: 97%;
+    width: 98%;
     height: 50px;
+    position: sticky;
+    top: 0;
     font-size: 17px;
     line-height: 50px;
     border: none;
+    background: lightgray;
     padding-left: 10px;
 }
 
