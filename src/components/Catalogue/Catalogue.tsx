@@ -37,8 +37,8 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
   }
 
   async componentDidMount() {
-    const result = await getCountriesViaApi();
-    this.countries = result as unknown as Country[];
+    const response = await getCountriesViaApi();
+    this.countries = response as Country[];
     const countryCodeFromUrl = window.location.pathname.replace('/', '');
 
     this.setState({
