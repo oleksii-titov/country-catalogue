@@ -181,26 +181,26 @@ export class Catalogue extends React.Component<{}, CatalogueState> {
     return (
       <div className={'country-details'}>
         <img className={'img-details'} src={flag} alt={'Official country flag'}/>
-        <span>Name
+        <span>Name:
             <span id={'detailed-info'}>{name}</span>
         </span>
-        <span>Alpha-2 country code
+        <span>Alpha-2 country code:
             <span id={'detailed-info'}>{alpha2Code}</span>
         </span>
-        <span>Alpha-3 country code
+        <span>Alpha-3 country code:
             <span id={'detailed-info'}>{alpha3Code}</span>
         </span>
-        <span>Phone code
+        <span>Phone code:
             <span id={'detailed-info'}>{callingCodes.join(', ')}</span>
         </span>
-        <span>Currency
+        <span>Currency:
             <span id={'detailed-info'}>{currenciesCodesList.join(', ')}</span>
         </span>
 
         {
           borders.length > 0
             ? <div>
-              <span id={'neighbor-countries'}>Neighbor countries</span>
+              <span id={'neighbor-countries'}>Neighbor countries:</span>
               <div id={'borders'}>{this.renderNeighbors(borders)}</div>
             </div>
             : null
