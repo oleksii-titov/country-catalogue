@@ -1,0 +1,1 @@
+export { CountryDetailsConnected as CountryDetails } from './CountryDetails.connect';

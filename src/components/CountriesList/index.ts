@@ -1,0 +1,1 @@
+export { CountriesListConnected as CountriesList } from './CountriesList.connect';

@@ -17,3 +17,8 @@ export interface EventWithId {
     id: string;
   };
 }
+
+export interface Action {
+  type: string;
+  payload: any;
+}

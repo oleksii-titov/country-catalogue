@@ -1,0 +1,84 @@
+.flex-item-wrapper {
+    position: relative;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.countries {
+    border-right: 1px solid #d1d1d1;
+}
+
+.flex-item-wrapper.countries {
+    width: 30%;
+    margin-right: 20px;
+    min-width: 500px;
+}
+
+.countries-list {
+    width: 100%;
+}
+
+.country-details-container {
+    margin-bottom: 60px;
+}
+
+.country-item {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 50px;
+    padding-left: 15px;
+}
+
+.country-item.selected {
+    font-weight: 700;
+    background-color: #4193A6;
+    color: white;
+}
+
+.country-item.selected:hover {
+    background-color: #4193A6;
+    color: white;
+}
+
+.country-item:hover {
+    cursor: pointer;
+    background-color: #4193a675;
+}
+
+img {
+    display: block;
+    width: 65%;
+}
+
+.search {
+    font-family: 'Noto Sans JP', sans-serif;
+    width: 98%;
+    height: 50px;
+    position: sticky;
+    top: 0;
+    font-size: 16px;
+    line-height: 50px;
+    border: none;
+    background: #f8f8f8;
+    padding-left: 10px;
+}
+
+.search:focus {
+    outline: none;
+}
+
+#no-search-results {
+    text-align: center;
+    color: gray;
+}
+
+::placeholder {
+    color: #686868;
+    font-size: 16px;
+}
+
+.icon-flag {
+    width: 30px;
+    display: inline;
+    padding-right: 10px;
+}

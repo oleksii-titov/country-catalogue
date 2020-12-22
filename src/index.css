@@ -19,3 +19,9 @@ body,
     height: 100%;
     overflow: hidden;
 }
+
+.main {
+    display: flex;
+    position: relative;
+    height: 100%;
+}
