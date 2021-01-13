@@ -23,6 +23,14 @@ export class CountryDetails extends Component<CountryDetailsProps, any> {
   handleNeighborCountryClick = (alpha2Code: string) => {
     updateHistoryState(alpha2Code);
     this.props.setSelectedCountryCode(alpha2Code);
+
+    const element = document.getElementById(alpha2Code);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
   }
 
   renderNoCountrySelected() {

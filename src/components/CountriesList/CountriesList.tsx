@@ -29,6 +29,14 @@ export class CountriesList extends Component<CountriesListProps, any> {
     const countryCodeFromUrl = window.location.pathname.replace('/', '');
     this.props.setSelectedCountryCode(countryCodeFromUrl);
 
+    const element = document.getElementById(countryCodeFromUrl);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+
     window.onpopstate = () => {
       const alpha2Code = window.history.state;
       this.props.setSelectedCountryCode(alpha2Code);
