@@ -11,22 +11,23 @@ const fetchData = async () => {
 }
 
 export const getCountriesViaApi = async () => {
-  let lastRecordDate: number = 0;
-
-  if (window.localStorage.length === 0) {
-    const response = await fetchData();
-    window.localStorage.setItem('countries', JSON.stringify(response));
-    lastRecordDate = Date.now();
-  }
-  else {
-    if ((lastRecordDate - Date.now()) < 1000 * 60 * 60 * 24 * 3) {
-      return JSON.parse(window.localStorage.getItem('countries') as string);
-    }
-    else {
-      lastRecordDate = Date.now();
-      const response = await fetchData();
-      window.localStorage.setItem('countries', JSON.stringify(response));
+  const lastRecordDateString = window.localStorage.getItem('lastRecordDate');
+  if (lastRecordDateString) {
+    const lastRecordDate = parseInt(lastRecordDateString);
+    if (Date.now() - lastRecordDate <= 86400 * 3) {
+      const countriesData = window.localStorage.getItem('countriesData');
+      if (countriesData) {
+        try {
+          return JSON.parse(countriesData);
+        } catch (e) {
+          console.error(e);
+        }
+      }
     }
   }
+  const data = await fetchData();
+  window.localStorage.setItem('lastRecordDate', String(Date.now()));
+  window.localStorage.setItem('countriesData', JSON.stringify(data));
+  return data;
 };
 
