@@ -16,20 +16,18 @@ export interface CountryDetailsProps {
 
 export class CountryDetails extends Component<CountryDetailsProps, any> {
 
+  handleEscape = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.props.resetSelectedCountry();
+    }
+  }
+
   componentDidMount() {
-    document.body.addEventListener('keyup', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.props.resetSelectedCountry();
-      }
-    });
+    document.body.addEventListener('keyup', this.handleEscape);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('keyup', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.props.resetSelectedCountry();
-      }
-    });
+    document.body.removeEventListener('keyup', this.handleEscape);
   }
 
   handleCloseButtonClick = () => {
