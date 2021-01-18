@@ -62,19 +62,19 @@
 
 #close-btn {
     text-align: center;
-    font-weight: 600;
+    color: gray;
+    font-weight: 800;
     width: 45px;
-    display: block;
-    margin: 20px auto -55px;
-    border: 1px solid #d6d6d6;
-    background: #f7f7f7;
-    border-radius: 100%;
+    border-radius: 5px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
 }
 
 #close-btn:hover {
     cursor: pointer;
-    color: white;
-    background: #de4f4f;
+    font-weight: 800;
+    color: #000000;
 }
 
 img {
